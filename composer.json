@@ -1,0 +1,21 @@
+{
+    "name": "pmvc-plugin/dimension",
+    "description": "Dimension plugin, design for integrate with Dimension app. ",
+    "type": "library",
+    "homepage": "https://github.com/pmvc/pmvc",
+    "keywords": ["dimension", "pmvc", "plug-in"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hill",
+            "email": "hill@kimo.com"
+        }
+    ],
+    "require": {
+        "pmvc/pmvc": "*",
+        "pmvc-plugin/controller": "*",
+        "pmvc-plugin/curl": "*",
+        "pmvc-plugin/url": "*"
+    },
+    "minimum-stability": "dev"
+}
