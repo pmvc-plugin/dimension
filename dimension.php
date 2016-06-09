@@ -26,7 +26,7 @@ class dimension extends \PMVC\PlugIn
     public function onSetConfig__run_form_($subject)
     {
         $subject->detach($this);
-        if (!\PMVC\getOption('DIMENTION_ON')) {
+        if (!\PMVC\getOption('DIMENSION_ON')) {
             return false;
         }
         if (isset($this['getDimension'])) {
@@ -44,9 +44,9 @@ class dimension extends \PMVC\PlugIn
     public function getDimension()
     {
         $url = \PMVC\plug('url')->getUrl(
-            \PMVC\getOption('DIMENTION_URL')
+            \PMVC\getOption('DIMENSION_URL')
         );
-        $url->query = $this['DIMENTION_QUERY'];
+        $url->query = $this['DIMENSION_QUERY'];
         $curl = \PMVC\plug('curl');
         $curl->get($url, function($r){
             $json = \PMVC\fromJson($r->body); 
