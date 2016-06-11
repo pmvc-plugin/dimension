@@ -26,6 +26,9 @@ class dimension extends \PMVC\PlugIn
     public function onSetConfig__run_form_($subject)
     {
         $subject->detach($this);
+        if ($this[_PLUGIN] === \PMVC\plug('controller')->getApp()) {
+            return false;
+        }
         if (!\PMVC\getOption('DIMENSION_ON')) {
             return false;
         }
@@ -49,7 +52,7 @@ class dimension extends \PMVC\PlugIn
         $url->query = $this['DIMENSION_QUERY'];
         $curl = \PMVC\plug('curl');
         $curl->get($url, function($r){
-            $json = \PMVC\fromJson($r->body); 
+            $json = \PMVC\fromJson($r->body, true); 
             \PMVC\option('set', $json);
         });
         $curl->process();
