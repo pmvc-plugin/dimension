@@ -15,33 +15,38 @@ class dimension extends \PMVC\PlugIn
     {
         \PMVC\callPlugin(
             'dispatcher',
-            'attach',
+            'attachAfter',
             [ 
                 $this,
-                Event\SET_CONFIG.'_'._RUN_FORM,
+                Event\MAP_REQUEST,
             ]
         );
+        $this['DIMENSION_QUERY'] = [];
     }
 
-    public function onSetConfig__run_form_($subject)
+    public function onMapRequest_post($subject)
     {
         $subject->detach($this);
         if ($this[_PLUGIN] === \PMVC\plug('controller')->getApp()) {
             return false;
         }
-        if (!\PMVC\getOption('DIMENSION_ON')) {
+        if (!\PMVC\getOption('DIMENSION_URL')) {
             return false;
         }
+        $c = \PMVC\plug('controller');
+        $this['DIMENSION_QUERY']['SITE']   = basename(\PMVC\getAppsParent());
+        $this['DIMENSION_QUERY']['APP']    = $c->getApp();
+        $this['DIMENSION_QUERY']['ACTION'] = $c->getAppAction();
         if (isset($this['getDimension'])) {
             call_user_func_array(
                 $this['getDimension'],
                 [
-                    $this['this'],
-                    \PMVC\getOption(_RUN_FORM)
+                    &$this['DIMENSION_QUERY'],
+                    $c->getRequest() 
                 ]
             );
-            $this->getDimension();
         }
+        $this->getDimension();
     }
 
     public function getDimension()
