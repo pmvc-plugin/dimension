@@ -63,7 +63,11 @@ class dimension extends \PMVC\PlugIn
         $curl = \PMVC\plug('curl');
         $curl->get($url, function($r){
             $json = \PMVC\fromJson($r->body, true); 
-            \PMVC\option('set', $json);
+            if (is_array($json)) {
+                \PMVC\option('set', $json);
+            } else {
+                \PMVC\plug('deotenv',$this['env']);
+            }
         })->set([
             CURLOPT_CONNECTTIMEOUT_MS=>100,
             CURLOPT_TIMEOUT=>1
