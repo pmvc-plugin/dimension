@@ -64,7 +64,10 @@ class dimension extends \PMVC\PlugIn
         $curl->get($url, function($r){
             $json = \PMVC\fromJson($r->body, true); 
             \PMVC\option('set', $json);
-        });
+        })->set([
+            CURLOPT_CONNECTTIMEOUT_MS=>100,
+            CURLOPT_TIMEOUT=>1
+        ]);
         $curl->process();
     }
 }
