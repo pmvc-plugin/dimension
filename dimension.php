@@ -66,7 +66,7 @@ class dimension extends \PMVC\PlugIn
             if (is_array($json)) {
                 \PMVC\option('set', $json);
             } else {
-                \PMVC\plug('deotenv',$this['env']);
+                \PMVC\plug('dotenv', [$this['env']]);
             }
         })->set([
             CURLOPT_CONNECTTIMEOUT_MS=>100,
