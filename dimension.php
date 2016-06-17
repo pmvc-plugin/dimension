@@ -37,6 +37,11 @@ class dimension extends \PMVC\PlugIn
         $this['DIMENSION_QUERY']['SITE']   = basename(\PMVC\getAppsParent());
         $this['DIMENSION_QUERY']['APP']    = $c->getApp();
         $this['DIMENSION_QUERY']['ACTION'] = $c->getAppAction();
+        $entry = explode(
+            '.',
+            \PMVC\plug('url')->getRunPhp()
+        );
+        $this['DIMENSION_QUERY']['ENTRY']=$entry[0];
         if (isset($this['getDimension'])) {
             call_user_func_array(
                 $this['getDimension'],
