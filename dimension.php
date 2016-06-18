@@ -9,44 +9,50 @@ use PMVC\Event;
 
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\dimension';
 
+/**
+ * @parameters string   dimensionUrl 
+ * @parameters array    dimensionQuery
+ * @parameters callable getDimension
+ */
 class dimension extends \PMVC\PlugIn
 {
     public function init()
     {
         \PMVC\callPlugin(
             'dispatcher',
-            'attachAfter',
+            'attach',
             [ 
                 $this,
                 Event\MAP_REQUEST,
             ]
         );
-        $this['DIMENSION_QUERY'] = [];
+        $this['dimensionQuery'] = [];
     }
 
-    public function onMapRequest_post($subject)
+    public function onMapRequest($subject)
     {
         $subject->detach($this);
         if ($this[_PLUGIN] === \PMVC\plug('controller')->getApp()) {
             return false;
         }
-        if (!\PMVC\getOption('DIMENSION_URL')) {
+        $this['dimensionUrl'] = \PMVC\getOption('dimensionUrl'); 
+        if (empty($this['dimensionUrl'])) {
             return false;
         }
         $c = \PMVC\plug('controller');
-        $this['DIMENSION_QUERY']['SITE']   = basename(\PMVC\getAppsParent());
-        $this['DIMENSION_QUERY']['APP']    = $c->getApp();
-        $this['DIMENSION_QUERY']['ACTION'] = $c->getAppAction();
+        $this['dimensionQuery']['SITE']   = basename(\PMVC\getAppsParent());
+        $this['dimensionQuery']['APP']    = $c->getApp();
+        $this['dimensionQuery']['ACTION'] = $c->getAppAction();
         $entry = explode(
             '.',
             \PMVC\plug('url')->getRunPhp()
         );
-        $this['DIMENSION_QUERY']['ENTRY']=$entry[0];
+        $this['dimensionQuery']['ENTRY']=$entry[0];
         if (isset($this['getDimension'])) {
             call_user_func_array(
                 $this['getDimension'],
                 [
-                    &$this['DIMENSION_QUERY'],
+                    &$this['dimensionQuery'],
                     $c->getRequest() 
                 ]
             );
@@ -56,14 +62,14 @@ class dimension extends \PMVC\PlugIn
 
     public function getDimension()
     {
-        $url = \PMVC\plug('url')->getUrl(
-            \PMVC\getOption('DIMENSION_URL')
-        );
-        $url->query = $this['DIMENSION_QUERY'];
+        $url = \PMVC\plug('url')
+            ->getUrl($this['dimensionUrl']);
+        $url->query = $this['dimensionQuery'];
         $curl = \PMVC\plug('curl');
         $curl->get($url, function($r){
             $json = \PMVC\fromJson($r->body, true); 
             if (is_array($json)) {
+                $this->unsetCli($json);
                 \PMVC\option('set', $json);
             } else {
                 \PMVC\plug('dotenv', [$this['env']]);
@@ -73,5 +79,19 @@ class dimension extends \PMVC\PlugIn
             CURLOPT_TIMEOUT=>1
         ]);
         $curl->process();
+    }
+
+    public function unsetCli(&$json)
+    {
+        $cliWhiteList = [
+            _ROUTER,
+            _VIEW_ENGINE,
+            _RUN_APPS
+        ];
+        foreach ($cliWhiteList as $key) {
+            if (\PMVC\getOption($key)) {
+                unset($json[$key]);
+            }
+        }
     }
 }
