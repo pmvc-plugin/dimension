@@ -32,14 +32,16 @@ class dimension extends \PMVC\PlugIn
     public function onMapRequest($subject)
     {
         $subject->detach($this);
-        if ($this[_PLUGIN] === \PMVC\plug('controller')->getApp()) {
-            return false;
-        }
-        $this['dimensionUrl'] = \PMVC\getOption('dimensionUrl'); 
-        if (empty($this['dimensionUrl'])) {
-            return false;
-        }
         $c = \PMVC\plug('controller');
+        if ($this[\PMVC\NAME] === $c->getApp()) {
+            return false;
+        }
+        if (empty($this['dimensionUrl'])) {
+            $this['dimensionUrl'] = \PMVC\getOption('dimensionUrl'); 
+            if (empty($this['dimensionUrl'])) {
+                return false;
+            }
+        }
         $this['dimensionQuery']['SITE']   = basename(\PMVC\getAppsParent());
         $this['dimensionQuery']['APP']    = $c->getApp();
         $this['dimensionQuery']['ACTION'] = $c->getAppAction();
@@ -58,6 +60,7 @@ class dimension extends \PMVC\PlugIn
             );
         }
         $this->getDimension();
+        return true;
     }
 
     public function getDimension()
