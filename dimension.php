@@ -73,6 +73,7 @@ class dimension extends \PMVC\PlugIn
             $json = \PMVC\fromJson($r->body, true); 
             if (is_array($json)) {
                 $this->unsetCli($json);
+                \PMVC\dev(function() use ($json){return $json;},'dimension');
                 \PMVC\option('set', $json);
             } else {
                 \PMVC\plug('dotenv', [$this['env']]);
