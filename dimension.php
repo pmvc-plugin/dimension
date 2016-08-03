@@ -76,11 +76,13 @@ class dimension extends \PMVC\PlugIn
                 \PMVC\dev(function() use ($json){return $json;},'dimension');
                 \PMVC\option('set', $json);
             } else {
-                \PMVC\plug('dotenv', [$this['env']]);
+                $dot = \PMVC\plug('dotenv');
+                if ($dot->fileExists($this['env'])) {
+                    $dot->toPMVC($this['env']);
+                }
             }
         })->set([
-            CURLOPT_CONNECTTIMEOUT_MS=>100,
-            CURLOPT_TIMEOUT=>1
+            CURLOPT_CONNECTTIMEOUT=>1
         ]);
         $curl->process();
     }
