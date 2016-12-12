@@ -28,7 +28,7 @@ class dimension extends \PMVC\PlugIn
                 Event\MAP_REQUEST,
             ]
         );
-        $this[QUERY] = [];
+        $this[QUERY] = new \PMVC\Hashmap();
     }
 
     public function onMapRequest($subject)
@@ -60,7 +60,7 @@ class dimension extends \PMVC\PlugIn
             call_user_func_array(
                 $this['getDimension'],
                 [
-                    &$this[QUERY],
+                    $this[QUERY],
                     $c->getRequest() 
                 ]
             );
