@@ -35,7 +35,7 @@ class dimension extends \PMVC\PlugIn
     {
         $subject->detach($this);
         $c = \PMVC\plug('controller');
-        $env = \PMVC\plug('getenv');
+        $pEnv = \PMVC\plug('getenv');
         if ($this[\PMVC\NAME] === $c->getApp()) {
             return false;
         }
@@ -45,10 +45,10 @@ class dimension extends \PMVC\PlugIn
                 return false;
             }
         }
-        $this[QUERY]['SITE']   = $env->get('SITE');
+        $this[QUERY]['SITE']   = $pEnv->get('SITE');
         $this[QUERY]['APP']    = $c->getApp();
         $this[QUERY]['ACTION'] = $c->getAppAction();
-        $env = \PMVC\plug('getenv')->get('ENVIRONMENT');
+        $env = $pEnv->get('ENVIRONMENT');
         if ($env) {
             $this[QUERY]['ENVIRONMENT'] = $env;
         }
