@@ -66,37 +66,47 @@ class dimension extends \PMVC\PlugIn
                 ]
             );
         }
-        $this->getDimension();
+        $this->process();
         return true;
     }
 
-    public function getDimension()
+    public function process()
+    {
+        $configs = $this->getRemoteConfigs($this[QUERY]);
+        if (!empty($configs)) {
+            $this->unsetCli($configs);
+            \PMVC\option('set', $configs);
+        } else {
+            $dot = \PMVC\plug('dotenv');
+            if ($dot->fileExists($this['env'])) {
+                $dot->toPMVC($this['env']);
+            }
+        }
+    }
+
+    public function getRemoteConfigs($query)
     {
         $url = \PMVC\plug('url')
             ->getUrl($this['dimensionUrl']);
-        $url->query = $this[QUERY];
+        $url->query = $query;
         $curl = \PMVC\plug('curl');
-        $curl->get($url, function($r){
+        $configs = [];
+        $curl->get($url, function($r) use (&$configs, $query) {
             $json = \PMVC\fromJson($r->body, true); 
             if (is_array($json)) {
-                $this->unsetCli($json);
-                \PMVC\dev(function() use ($json){
+                $configs = $json;
+                \PMVC\dev(function() use ($json, $query){
                     return [
-                        'query'=>\PMVC\get($this[QUERY]),
+                        'query'=>\PMVC\get($query),
                         'configs'=>$json
                     ];
                 },'dimension');
-                \PMVC\option('set', $json);
-            } else {
-                $dot = \PMVC\plug('dotenv');
-                if ($dot->fileExists($this['env'])) {
-                    $dot->toPMVC($this['env']);
-                }
             }
         })->set([
             CURLOPT_CONNECTTIMEOUT=>1
         ]);
         $curl->process();
+        return $configs;
     }
 
     public function unsetCli(&$json)
