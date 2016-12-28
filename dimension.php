@@ -91,13 +91,14 @@ class dimension extends \PMVC\PlugIn
         $url->query = $query;
         $curl = \PMVC\plug('curl');
         $configs = [];
-        $curl->get($url, function($r) use (&$configs, $query) {
+        $curl->get($url, function($r) use (&$configs, $query, $url) {
             $json = \PMVC\fromJson($r->body, true); 
             if (is_array($json)) {
                 $configs = $json;
-                \PMVC\dev(function() use ($json, $query){
+                \PMVC\dev(function() use ($json, $query, $url){
                     return [
                         'query'=>\PMVC\get($query),
+                        'url'=>(string)$url,
                         'configs'=>$json
                     ];
                 },'dimension');
