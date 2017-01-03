@@ -52,11 +52,24 @@ class dimension extends \PMVC\PlugIn
         if ($env) {
             $this[QUERY]['ENVIRONMENT'] = $env;
         }
+
+        // Entry
         $entry = explode(
             '.',
             \PMVC\plug('url')->getRunPhp()
         );
         $this[QUERY]['ENTRY']=$entry[0];
+
+        // Bucket
+        $buckets = $pEnv->get('HTTP_X_BUCKET_TESTS');
+        if (!empty($buckets)) {
+            $this[QUERY]['BUCKET'] = array_diff(
+                explode(',',$buckets),
+                ['']
+            );
+        }
+
+        // Last
         if (isset($this['getDimension'])) {
             call_user_func_array(
                 $this['getDimension'],
