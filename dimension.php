@@ -52,9 +52,9 @@ class dimension extends \PMVC\PlugIn
         if ($env) {
             $this[QUERY]['ENVIRONMENT'] = $env;
         }
-        $intl = $pEnv->get('INTL');
-        if ($intl) {
-            $this[QUERY]['INTL'] = $intl;
+        $market = $pEnv->get('MARKET');
+        if ($market) {
+            $this[QUERY]['MARKET'] = $market;
         }
 
         // Entry
