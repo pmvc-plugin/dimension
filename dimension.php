@@ -5,8 +5,6 @@ use PMVC\Event;
 
 \PMVC\initPlugin(['controller'=>null]);
 
-// \PMVC\l(__DIR__.'/xxx.php');
-
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\dimension';
 
 const QUERY = 'dimensionQuery';
@@ -93,7 +91,7 @@ class dimension extends \PMVC\PlugIn
         if (!empty($configs)) {
             $this->unsetCli($configs);
             \PMVC\option('set', $configs);
-        } else {
+        } else { // failback
             $dot = \PMVC\plug('dotenv');
             if ($dot->fileExists($this['env'])) {
                 $dot->toPMVC($this['env']);
