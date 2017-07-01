@@ -54,6 +54,10 @@ class dimension extends \PMVC\PlugIn
         if ($market) {
             $this[QUERY]['MARKET'] = $market;
         }
+        $utm = $pEnv->get('UTM');
+        if ($utm) {
+            $this[QUERY]['UTM'] = $utm;
+        }
 
         // Entry
         $entry = explode(
@@ -91,6 +95,11 @@ class dimension extends \PMVC\PlugIn
         if (!empty($configs)) {
             $this->unsetCli($configs);
             \PMVC\option('set', $configs);
+            if (isset($configs['resetBuckets'])) {
+                \PMVC\plug('getenv', [
+                    'HTTP_X_BUCKET_TESTS'=> $configs['resetBuckets']
+                ]);
+            }
         } else { // failback
             $dot = \PMVC\plug('dotenv');
             if ($dot->fileExists($this['env'])) {
