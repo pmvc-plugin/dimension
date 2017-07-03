@@ -44,7 +44,7 @@ class dimension extends \PMVC\PlugIn
             }
         }
         $this[QUERY]['SITE']   = $pEnv->get('SITE');
-        $this[QUERY]['APP']    = $c->getApp();
+        $this[QUERY]['APP']    = $c[_REAL_APP];
         $this[QUERY]['ACTION'] = $c->getAppAction();
         $env = $pEnv->get('ENVIRONMENT');
         if ($env) {
