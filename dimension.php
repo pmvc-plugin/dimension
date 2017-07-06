@@ -23,13 +23,17 @@ class dimension extends \PMVC\PlugIn
             'attach',
             [ 
                 $this,
-                Event\MAP_REQUEST,
+                \PMVC\callPlugin(
+                    'dispatcher',
+                    'getOptionKey',
+                    [_REAL_APP]
+                )
             ]
         );
         $this[QUERY] = new \PMVC\Hashmap();
     }
 
-    public function onMapRequest($subject)
+    public function onSetConfig__real_app_($subject)
     {
         $subject->detach($this);
         $c = \PMVC\plug('controller');

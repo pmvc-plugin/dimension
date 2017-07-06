@@ -27,11 +27,11 @@ class DimensionTest extends PHPUnit_Framework_TestCase
         $c = \PMVC\plug('controller');
         $c->setApp($this->_plug); 
         $p = \PMVC\plug($this->_plug);
-        $result = $p->onMapRequest(new FakeSubject());
+        $result = $p->onSetConfig__real_app_(new FakeSubject());
         $this->assertFalse($result);
         $c->setApp('fake'); 
         $p['dimensionUrl'] = 'http://xxx';
-        $result = $p->onMapRequest(new FakeSubject());
+        $result = $p->onSetConfig__real_app_(new FakeSubject());
         $this->assertTrue($result);
     }
 
@@ -40,7 +40,7 @@ class DimensionTest extends PHPUnit_Framework_TestCase
         $c = \PMVC\plug('controller');
         $c->setApp('fake'); 
         $p = \PMVC\plug($this->_plug);
-        $result = $p->onMapRequest(new FakeSubject());
+        $result = $p->onSetConfig__real_app_(new FakeSubject());
         $this->assertFalse($result);
     }
 
