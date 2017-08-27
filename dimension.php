@@ -62,6 +62,10 @@ class dimension extends \PMVC\PlugIn
         if ($utm) {
             $this[QUERY]['UTM'] = $utm;
         }
+        $colo = $pEnv->get('COLO');
+        if ($colo) {
+            $this[QUERY]['COLO'] = $colo;
+        }
 
         // Entry
         $entry = explode(
