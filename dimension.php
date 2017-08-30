@@ -1,4 +1,5 @@
 <?php
+
 namespace PMVC\PlugIn\dimension;
 
 use PMVC\Event;
