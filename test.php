@@ -26,7 +26,13 @@ class DimensionTest extends PHPUnit_Framework_TestCase
     {
         $c = \PMVC\plug('controller');
         $c->setApp($this->_plug); 
+        $oPlug = $this->
+            getMockBuilder('PMVC\PlugIn\dimension\dimension')->
+            setMethods(['process'])->
+            getMock();
+        \PMVC\replug($this->_plug, $oPlug); 
         $p = \PMVC\plug($this->_plug);
+        $p->init();
         $result = $p->onSetConfig__real_app_(new FakeSubject());
         $this->assertFalse($result);
         $c->setApp('fake'); 

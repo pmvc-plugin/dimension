@@ -135,6 +135,11 @@ class dimension extends \PMVC\PlugIn
                         'configs'=>$json
                     ];
                 },'dimension');
+            } else {
+                trigger_error(
+                    'Get remote dimension failed. Error code:'.$r->errno,
+                    E_USER_WARNING
+                );
             }
         })->set([
             CURLOPT_CONNECTTIMEOUT=>1
