@@ -142,7 +142,7 @@ class dimension extends \PMVC\PlugIn
                 );
             }
         })->set([
-            CURLOPT_CONNECTTIMEOUT=>1
+            CURLOPT_CONNECTTIMEOUT=>2
         ]);
         $curl->process();
         return $configs;
