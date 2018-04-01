@@ -142,8 +142,10 @@ class dimension extends \PMVC\PlugIn
                 );
             }
         })->set([
-            CURLOPT_CONNECTTIMEOUT=>5,
-            CURLOPT_TIMEOUT=>5
+            CURLOPT_FORBID_REUSE   => false,
+            CURLOPT_FRESH_CONNECT  => false,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT        => 5
         ]);
         $curl->process();
         return $configs;
