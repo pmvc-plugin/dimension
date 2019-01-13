@@ -43,7 +43,9 @@ class Encryption
             $encodeText = $this->
                 _encryptor->
                 encode($text);
-            file_put_contents($newName, $encodeText);
+            if (!empty($encodeText)) {
+              file_put_contents($newName, $encodeText);
+            }
         }
     }
 
@@ -62,7 +64,9 @@ class Encryption
             $decodeText = $this->
                 _encryptor->
                 decode($text);
-            file_put_contents($newName, $decodeText);
+            if (!empty($decodeText)) {
+              file_put_contents($newName, $decodeText);
+            }
         }
     }
 }
