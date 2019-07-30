@@ -98,6 +98,11 @@ class dimension extends \PMVC\PlugIn
         return true;
     }
 
+    public function getQuery($key)
+    {
+      return \PMVC\get($this[QUERY], $key);
+    }
+
     public function process()
     {
         $configs = $this->getRemoteConfigs($this[QUERY]);
