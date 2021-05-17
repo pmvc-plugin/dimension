@@ -4,14 +4,14 @@ namespace PMVC\PlugIn\dimension;
 
 use PMVC\Event;
 
-\PMVC\initPlugin(['controller'=>null]);
+\PMVC\initPlugin(['controller' => null]);
 
-${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\dimension';
+${_INIT_CONFIG}[_CLASS] = __NAMESPACE__ . '\dimension';
 
 const QUERY = 'dimensionQuery';
 
 /**
- * @parameters string   dimensionUrl 
+ * @parameters string   dimensionUrl
  * @parameters array    dimensionQuery
  * @parameters callable getDimension
  */
@@ -19,18 +19,10 @@ class dimension extends \PMVC\PlugIn
 {
     public function init()
     {
-        \PMVC\callPlugin(
-            'dispatcher',
-            'attach',
-            [ 
-                $this,
-                \PMVC\callPlugin(
-                    'dispatcher',
-                    'getOptionKey',
-                    [_REAL_APP]
-                )
-            ]
-        );
+        \PMVC\callPlugin('dispatcher', 'attach', [
+            $this,
+            \PMVC\callPlugin('dispatcher', 'getOptionKey', [_REAL_APP]),
+        ]);
         $this[QUERY] = new \PMVC\Hashmap();
     }
 
@@ -38,18 +30,18 @@ class dimension extends \PMVC\PlugIn
     {
         $subject->detach($this);
         $c = \PMVC\plug('controller');
-        $pEnv = \PMVC\plug('getenv');
+        $pEnv = \PMVC\plug('get');
         if ($this[\PMVC\NAME] === $c->getApp()) {
             return false;
         }
         if (empty($this['dimensionUrl'])) {
-            $this['dimensionUrl'] = \PMVC\getOption('dimensionUrl'); 
+            $this['dimensionUrl'] = \PMVC\getOption('dimensionUrl');
             if (empty($this['dimensionUrl'])) {
-                return false;
+                return $this->_processFailback();
             }
         }
-        $this[QUERY]['SITE']   = $pEnv->get('SITE');
-        $this[QUERY]['APP']    = $c[_REAL_APP];
+        $this[QUERY]['SITE'] = $pEnv->get('SITE');
+        $this[QUERY]['APP'] = $c[_REAL_APP];
         $this[QUERY]['ACTION'] = $c[_RUN_ACTION];
         $env = $pEnv->get('ENVIRONMENT');
         if ($env) {
@@ -69,38 +61,28 @@ class dimension extends \PMVC\PlugIn
         }
 
         // Entry
-        $entry = explode(
-            '.',
-            \PMVC\plug('url')->getRunPhp()
-        );
-        $this[QUERY]['ENTRY']=$entry[0];
+        $entry = explode('.', \PMVC\plug('url')->getRunPhp());
+        $this[QUERY]['ENTRY'] = $entry[0];
 
         // Bucket
         $buckets = $pEnv->get('HTTP_X_BUCKET_TESTS');
         if (!empty($buckets)) {
-            $this[QUERY]['BUCKET'] = array_diff(
-                explode(',',$buckets),
-                ['']
-            );
+            $this[QUERY]['BUCKET'] = array_diff(explode(',', $buckets), ['']);
         }
 
         // Last
         if (isset($this['getDimension'])) {
-            call_user_func_array(
-                $this['getDimension'],
-                [
-                    $this[QUERY],
-                    $c->getRequest() 
-                ]
-            );
+            call_user_func_array($this['getDimension'], [
+                $this[QUERY],
+                $c->getRequest(),
+            ]);
         }
-        $this->process();
-        return true;
+        return $this->process();
     }
 
     public function getQuery($key)
     {
-      return \PMVC\get($this[QUERY], $key);
+        return \PMVC\get($this[QUERY], $key);
     }
 
     public function process()
@@ -111,61 +93,67 @@ class dimension extends \PMVC\PlugIn
             \PMVC\option('set', $configs);
             if (isset($configs['resetBuckets'])) {
                 \PMVC\plug('getenv', [
-                    'HTTP_X_BUCKET_TESTS'=> $configs['resetBuckets']
+                    'HTTP_X_BUCKET_TESTS' => $configs['resetBuckets'],
                 ]);
             }
-        } else { // failback
-            $dot = \PMVC\plug('dotenv');
-            if ($dot->fileExists($this['env'])) {
-                $dot->toPMVC($this['env']);
-            }
+            return true;
+        } else {
+            // failback
+            return $this->_processFailback();
         }
+    }
+
+    private function _processFailback()
+    {
+        $dot = \PMVC\plug('dotenv');
+        if ($dot->fileExists($this['env'])) {
+            $dot->toPMVC($this['env']);
+        }
+        return false;
     }
 
     public function getRemoteConfigs($query)
     {
-        $url = \PMVC\plug('url')
-            ->getUrl($this['dimensionUrl']);
+        $url = \PMVC\plug('url')->getUrl($this['dimensionUrl']);
         $url->query = $query;
         $curl = \PMVC\plug('curl');
         $configs = [];
-        $curl->get($url, function($r) use (&$configs, $query, $url) {
-            $json = \PMVC\fromJson($r->body, true); 
-            if (is_array($json)) {
-                $configs = $json;
-                \PMVC\dev(function() use ($json, $query, $url){
-                    return [
-                        'query'=>\PMVC\get($query),
-                        'url'=>(string)$url,
-                        'configs'=>$json
-                    ];
-                },'dimension');
-            } else {
-              \PMVC\triggerJson('Get remote dimension failed. Error code', [
-                  'CURL_ERROR' => [
-                    $r->errno,
-                    $r->error,
-                  ],
-                  'url' => $r->url              
-              ], E_USER_WARNING);
-            }
-        })->set([
-            CURLOPT_FORBID_REUSE   => false,
-            CURLOPT_FRESH_CONNECT  => false,
-            CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT        => 5
-        ]);
+        $curl
+            ->get($url, function ($r) use (&$configs, $query, $url) {
+                $json = \PMVC\fromJson($r->body, true);
+                if (is_array($json)) {
+                    $configs = $json;
+                    \PMVC\dev(function () use ($json, $query, $url) {
+                        return [
+                            'query' => \PMVC\get($query),
+                            'url' => (string) $url,
+                            'configs' => $json,
+                        ];
+                    }, 'dimension');
+                } else {
+                    \PMVC\triggerJson(
+                        'Get remote dimension failed. Error code',
+                        [
+                            'CURL_ERROR' => [$r->errno, $r->error],
+                            'url' => $r->url,
+                        ],
+                        E_USER_WARNING
+                    );
+                }
+            })
+            ->set([
+                CURLOPT_FORBID_REUSE => false,
+                CURLOPT_FRESH_CONNECT => false,
+                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_TIMEOUT => 5,
+            ]);
         $curl->process();
         return $configs;
     }
 
     public function unsetCli(&$json)
     {
-        $cliWhiteList = [
-            _ROUTER,
-            _VIEW_ENGINE,
-            _RUN_APPS
-        ];
+        $cliWhiteList = [_ROUTER, _VIEW_ENGINE, _RUN_APPS];
         foreach ($cliWhiteList as $key) {
             if (\PMVC\getOption($key)) {
                 unset($json[$key]);
