@@ -1,15 +1,14 @@
 <?php
 namespace PMVC\PlugIn\dimension;
-use PHPUnit_Framework_TestCase;
 
-\PMVC\Load::plug();
-\PMVC\addPlugInFolders(['../']);
+use PMVC\TestCase;
 
-class DimensionTest extends PHPUnit_Framework_TestCase
+class DimensionTest extends TestCase
 {
     private $_plug = 'dimension';
-    function setup()
+    function pmvc_setup()
     {
+        \PMVC\plug('get', ['order'=>['getenv']]); 
         \PMVC\unplug($this->_plug);
     }
 
@@ -19,7 +18,7 @@ class DimensionTest extends PHPUnit_Framework_TestCase
         print_r(\PMVC\plug($this->_plug));
         $output = ob_get_contents();
         ob_end_clean();
-        $this->assertContains($this->_plug,$output);
+        $this->haveString($this->_plug,$output);
     }
 
     function testAvoidSameApp()
@@ -27,9 +26,11 @@ class DimensionTest extends PHPUnit_Framework_TestCase
         $c = \PMVC\plug('controller');
         $c->setApp($this->_plug); 
         $oPlug = $this->
-            getMockBuilder('PMVC\PlugIn\dimension\dimension')->
+            getMockBuilder('\PMVC\PlugIn\dimension\dimension')->
             setMethods(['process'])->
             getMock();
+        $oPlug->method('process')
+             ->willReturn(true);
         \PMVC\replug($this->_plug, $oPlug); 
         $p = \PMVC\plug($this->_plug);
         $p->init();

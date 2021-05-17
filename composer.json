@@ -16,8 +16,12 @@
         "pmvc-plugin/controller": "*",
         "pmvc-plugin/curl": "*",
         "pmvc-plugin/url": "*",
-        "pmvc-plugin/getenv": "*",
+        "pmvc-plugin/get": "*",
         "pmvc-plugin/dotenv": "*"
+    },
+    "require-dev": {
+        "pmvc-plugin/getenv": "*",
+        "pmvc-plugin/unit": "*"
     },
     "minimum-stability": "dev"
 }
