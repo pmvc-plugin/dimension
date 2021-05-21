@@ -9,6 +9,7 @@ use PMVC\Event;
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__ . '\dimension';
 
 const QUERY = 'dimensionQuery';
+const DIMENSION_URL = 'dimensionUrl';
 
 /**
  * @parameters string   dimensionUrl
@@ -30,16 +31,16 @@ class dimension extends \PMVC\PlugIn
     {
         $subject->detach($this);
         $c = \PMVC\plug('controller');
-        $pEnv = \PMVC\plug('get');
         if ($this[\PMVC\NAME] === $c->getApp()) {
             return false;
         }
-        if (empty($this['dimensionUrl'])) {
-            $this['dimensionUrl'] = \PMVC\getOption('dimensionUrl');
-            if (empty($this['dimensionUrl'])) {
+        if (empty($this[DIMENSION_URL])) {
+            $this[DIMENSION_URL] = \PMVC\getOption(DIMENSION_URL);
+            if (empty($this[DIMENSION_URL])) {
                 return $this->_processFailback();
             }
         }
+        $pEnv = \PMVC\plug('get');
         $this[QUERY]['SITE'] = $pEnv->get('SITE');
         $this[QUERY]['APP'] = $c[_REAL_APP];
         $this[QUERY]['ACTION'] = $c[_RUN_ACTION];
@@ -114,7 +115,7 @@ class dimension extends \PMVC\PlugIn
 
     public function getRemoteConfigs($query)
     {
-        $url = \PMVC\plug('url')->getUrl($this['dimensionUrl']);
+        $url = \PMVC\plug('url')->getUrl($this[DIMENSION_URL]);
         $url->query = $query;
         $curl = \PMVC\plug('curl');
         $configs = [];

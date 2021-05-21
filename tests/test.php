@@ -31,7 +31,7 @@ class DimensionTest extends TestCase
             getMock();
         $oPlug->method('process')
              ->willReturn(true);
-        \PMVC\replug($this->_plug, $oPlug); 
+        \PMVC\replug($this->_plug, [], $oPlug); 
         $p = \PMVC\plug($this->_plug);
         $p->init();
         $result = $p->onSetConfig__real_app_(new FakeSubject());
