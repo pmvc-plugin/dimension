@@ -125,6 +125,7 @@ class dimension extends \PMVC\PlugIn
                 if (is_array($json)) {
                     $configs = $json;
                     \PMVC\dev(function () use ($json, $query, $url) {
+                        $json['PW'] = '*secret*'; 
                         return [
                             'query' => \PMVC\get($query),
                             'url' => (string) $url,
