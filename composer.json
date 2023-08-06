@@ -1,27 +1,27 @@
 {
-    "name": "pmvc-plugin/dimension",
-    "description": "Dimension plugin, design for integrate with Dimension app. ",
-    "type": "library",
-    "homepage": "https://github.com/pmvc/pmvc",
-    "keywords": ["dimension", "pmvc", "plug-in"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Hill",
-            "email": "hill@kimo.com"
-        }
-    ],
-    "require": {
-        "pmvc/pmvc": "*",
-        "pmvc-plugin/controller": "*",
-        "pmvc-plugin/curl": "*",
-        "pmvc-plugin/url": "*",
-        "pmvc-plugin/get": "*",
-        "pmvc-plugin/dotenv": "*"
-    },
-    "require-dev": {
-        "pmvc-plugin/getenv": "*",
-        "pmvc-plugin/unit": "*"
-    },
-    "minimum-stability": "dev"
+  "name": "pmvc-plugin/dimension",
+  "description": "Dimension plugin, design for integrate with Dimension app. ",
+  "type": "library",
+  "homepage": "https://github.com/pmvc/pmvc",
+  "keywords": ["dimension", "pmvc", "plug-in"],
+  "license": "ISC",
+  "authors": [
+    {
+      "name": "Hill",
+      "email": "hill@kimo.com"
+    }
+  ],
+  "require": {
+    "pmvc/pmvc": "*",
+    "pmvc-plugin/controller": "*",
+    "pmvc-plugin/curl": "*",
+    "pmvc-plugin/url": "*",
+    "pmvc-plugin/get": "*",
+    "pmvc-plugin/dotenv": "*"
+  },
+  "require-dev": {
+    "pmvc-plugin/getenv": "*",
+    "pmvc-plugin/unit": "*"
+  },
+  "minimum-stability": "dev"
 }

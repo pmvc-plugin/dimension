@@ -1,0 +1,1 @@
+{"version":1,"defects":{"PMVC\\PlugIn\\dimension\\DimensionTest::testAvoidSameApp":8,"PMVC\\PlugIn\\dimension\\DimensionTest::testEmptyDimensionUrl":7},"times":{"PMVC\\PlugIn\\dimension\\DimensionTest::testPlugin":0.001,"PMVC\\PlugIn\\dimension\\DimensionTest::testAvoidSameApp":0.003,"PMVC\\PlugIn\\dimension\\DimensionTest::testEmptyDimensionUrl":0}}

@@ -26,8 +26,8 @@ class DimensionTest extends TestCase
         $c = \PMVC\plug('controller');
         $c->setApp($this->_plug); 
         $oPlug = $this->
-            getMockBuilder('\PMVC\PlugIn\dimension\dimension')->
-            setMethods(['process'])->
+            getPMVCMockBuilder('\PMVC\PlugIn\dimension\dimension')->
+            pmvc_onlyMethods(['process'])->
             getMock();
         $oPlug->method('process')
              ->willReturn(true);
